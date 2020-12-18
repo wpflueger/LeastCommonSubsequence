@@ -1,4 +1,4 @@
 #!/bin/bash
-g++ longestv1.cpp -o lcs -O2 -fopenmp
+g++ longestv1.cpp -o lcs -O1 -fopenmp
 g++ sequence.cpp -o sequence -O1
-sh run.sh
+# bash run.sh
