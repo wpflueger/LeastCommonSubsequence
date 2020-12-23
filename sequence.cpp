@@ -17,11 +17,6 @@ void sequence(int a, int b)
     file2.open("text2.dat");
     srand(time(NULL));
 
-    if (a > 100000 || b > 100000)
-    {
-        a = 100000;
-        b = 100000;
-    }
     for (int i = 0; i < a; i++)
     {
         r = rand() % 26;

@@ -1,5 +1,5 @@
 // https://www.geeksforgeeks.org/longest-common-subsequence-dp-4/
-// Bad Runtime ==> O(2^n)
+//
 // Better O(mn)
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,19 +18,7 @@ using namespace std;
 
 int max(int a, int b);
 int nthreads, tid;
-//
-/* Returns length of LCS for X[0..m-1], Y[0..n-1] */
-int lcs(char *X, char *Y, int m, int n)
-{
-    if (m == 0 || n == 0)
-        return 0;
-    if (X[m - 1] == Y[n - 1])
-        return 1 + lcs(X, Y, m - 1, n - 1);
-    else
-        return max(lcs(X, Y, m, n - 1), lcs(X, Y, m - 1, n));
-}
 
-/* Returns length of LCS for X[0..m-1], Y[0..n-1] */
 int lcsSequential(char *X, char *Y, int m, int n) // O(mn)
 {
     unsigned short int **L;
@@ -41,10 +29,6 @@ int lcsSequential(char *X, char *Y, int m, int n) // O(mn)
         L[i] = (unsigned short int *)malloc(sizeof(unsigned short int) * (n + 1));
     }
 
-    /* Following steps build L[m+1][n+1] in  
-       bottom up fashion. Note that L[i][j]  
-       contains length of LCS of X[0..i-1] 
-       and Y[0..j-1] */
     for (i = 0; i <= m; i++)
     {
         for (j = 0; j <= n; j++)
@@ -62,37 +46,25 @@ int lcsSequential(char *X, char *Y, int m, int n) // O(mn)
 
     int index = L[m][n];
 
-    // Create a character array to store the lcs string
     char lcs[index + 1];
-    lcs[index] = '\0'; // Set the terminating character
+    lcs[index] = '\0';
 
-    // Start from the right-most-bottom-most corner and
-    // one by one store characters in lcs[]
     i = m;
     j = n;
     while (i > 0 && j > 0)
     {
-        // If current character in X[] and Y are same, then
-        // current character is part of LCS
         if (X[i - 1] == Y[j - 1])
         {
-            lcs[index - 1] = X[i - 1]; // Put current character in result
+            lcs[index - 1] = X[i - 1];
             i--;
             j--;
-            index--; // reduce values of i, j and index
+            index--;
         }
-
-        // If not same, then find the larger of two and
-        // go in the direction of larger value
-        // If equal go left (as statement rule says so)
         else if (L[i - 1][j] >= L[i][j - 1])
             i--;
         else
             j--;
     }
-
-    /* L[m][n] contains length of LCS  
-    for X[0..n-1] and Y[0..m-1] */
     cout << L[m][n] /*<< " " << lcs*/ << endl;
 
     return L[m][n];
@@ -106,7 +78,6 @@ int max(int a, int b)
 
 /***********************************************************************************/
 
-/* Returns length of LCS for X[0..m-1], Y[0..n-1] */
 int lcsParallel(char *X, char *Y, int m, int n)
 {
     unsigned short int **L;
@@ -123,8 +94,6 @@ int lcsParallel(char *X, char *Y, int m, int n)
         L[i] = (unsigned short int *)malloc(sizeof(unsigned short int) * (n + 1));
     }
 
-    /* Following steps build L[m+1][n+1] in bottom up fashion. Note
-  that L[i][j] contains length of LCS of X[0..i-1] and Y[0..j-1] */
     for (i = 0; i <= m; i++)
     {
         L[i][0] = 0;
@@ -178,39 +147,7 @@ int lcsParallel(char *X, char *Y, int m, int n)
         }
         size += inc;
     }
-    // Following code is used to print LCS
-    // int index = L[m][n];
 
-    // // Create a character array to store the lcs string
-    // char lcs[index + 1];
-    // lcs[index] = '\0'; // Set the terminating character
-
-    // // Start from the right-most-bottom-most corner and
-    // // one by one store characters in lcs[]
-    // i = m;
-    // j = n;
-    // while (i > 0 && j > 0)
-    // {
-    //     // If current character in X[] and Y are same, then
-    //     // current character is part of LCS
-    //     if (X[i - 1] == Y[j - 1])
-    //     {
-    //         lcs[index - 1] = X[i - 1]; // Put current character in result
-    //         i--;
-    //         j--;
-    //         index--; // reduce values of i, j and index
-    //     }
-
-    //     // If not same, then find the larger of two and
-    //     // go in the direction of larger value
-    //     // If equal go left (as statement rule says so)
-    //     else if (L[i - 1][j] >= L[i][j - 1])
-    //         i--;
-    //     else
-    //         j--;
-    // }
-
-    /* Print the lcs */
     cout << L[m][n] /*<< " " << lcs*/ << endl;
 
     for (i = 0; i <= m; i++)
@@ -222,7 +159,6 @@ int lcsParallel(char *X, char *Y, int m, int n)
     return 0;
 }
 
-/***********************************************************************************/
 int lcs2(char *X, char *Y, int m, int n)
 {
     unsigned short int **L;
@@ -239,8 +175,6 @@ int lcs2(char *X, char *Y, int m, int n)
         L[i] = (unsigned short int *)malloc(sizeof(unsigned short int) * (n + 1));
     }
 
-    /* Following steps build L[m+1][n+1] in bottom up fashion. Note
-  that L[i][j] contains length of LCS of X[0..i-1] and Y[0..j-1] */
     for (i = 0; i <= m; i++)
     {
         L[i][0] = 0;
@@ -276,8 +210,6 @@ int lcs2(char *X, char *Y, int m, int n)
 
         init_x = x;
         init_y = y;
-        // cout << "n " << nthreads << endl;
-        // #pragma omp parallel for private(x, y)
         for (j = 0; j < size; j++)
         {
             x = init_x - j;
@@ -294,39 +226,8 @@ int lcs2(char *X, char *Y, int m, int n)
         }
         size += inc;
     }
-    // Following code is used to print LCS
     int index = L[m][n];
 
-    // Create a character array to store the lcs string
-    char lcs[index + 1];
-    lcs[index] = '\0'; // Set the terminating character
-
-    // Start from the right-most-bottom-most corner and
-    // one by one store characters in lcs[]
-    i = m;
-    j = n;
-    while (i > 0 && j > 0)
-    {
-        // If current character in X[] and Y are same, then
-        // current character is part of LCS
-        if (X[i - 1] == Y[j - 1])
-        {
-            lcs[index - 1] = X[i - 1]; // Put current character in result
-            i--;
-            j--;
-            index--; // reduce values of i, j and index
-        }
-
-        // If not same, then find the larger of two and
-        // go in the direction of larger value
-        // If equal go left (as statement rule says so)
-        else if (L[i - 1][j] >= L[i][j - 1])
-            i--;
-        else
-            j--;
-    }
-
-    /* Print the lcs */
     cerr << L[m][n] /*<< " " << lcs*/ << endl;
 
     for (i = 0; i <= m; i++)
@@ -338,7 +239,6 @@ int lcs2(char *X, char *Y, int m, int n)
     return 0;
 }
 
-/**********************/
 int main(int argc, char *argv[])
 {
     if (argc < 5)

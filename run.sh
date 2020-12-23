@@ -4,22 +4,22 @@
 # export OMP_NUM_THREADS=1
 # LENS = 10 100 1000 5000 7500 10000 20000 30000 40000 50000 
 
-for LEN in 10 100 1000 5000 7500 10000 20000 30000 40000 50000 
+for LEN in  70000 80000 90000
 do 
-echo "+++++++++++++++" &>> out.txt
-    echo "Length: $LEN" &>>  out.txt
+echo "+++++++++++++++" &>> large_out.txt
+    echo "Length: $LEN" &>>  large_out.txt
     ./sequence $LEN $LEN
-    for j in {0..4}
-    do
-    echo "===============" &>>  out.txt
-    echo "Try: $j" &>>  out.txt
-        for i in {1..1}
+    # for j in {0..4}
+    # do
+    # echo "===============" &>>  large_out.txt
+    # echo "Try: $j" &>>  large_out.txt
+        for i in {3..6}
         do 
-            echo "Thread: $i" &>>  out.txt
+            echo "Thread: $i" &>>  large_out.txt
             export OMP_NUM_THREADS=$i
-            sudo perf stat ./lcs text1.dat text2.dat $LEN $LEN $i &>> out.txt
+            sudo perf stat ./lcs text1.dat text2.dat $LEN $LEN $i &>> large_out.txt
         done
-    done
+    # done
 done
 
 
